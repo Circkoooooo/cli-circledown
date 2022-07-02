@@ -1,14 +1,22 @@
 # Yo circledown - oneblog Generator
 脚手架-用于管理oneclicle blog博客的
 
-## Install the circledown
-> npm install -g yo generator-circledown
+## 准备工作
+> 安装yo
+```
+npm install -g yo
+```
 
-sometimes you have installed the yo, you can use the
-> npm install -g generator-circledown
+## 如何安装circledown
+1. 非全局安装（推荐）
+```
+npm i generator-circledown
+```
 
-## Run yo circledown
-> yo circledown
+2. 全局安装
 
-or you can use the global cli
-> yo
+## 使用
+```
+yo circledown
+```
+或者yo命令来选择circledown的generator
