@@ -31,6 +31,12 @@ module.exports = class extends generators {
 				name: 'mdTitle',
 				message: 'title',
 				default: 'title',
+			},
+			{
+				type: 'input',
+				name: 'mdDetail',
+				message: 'detail',
+				default: 'detail',
 
 			},
 			{
@@ -89,7 +95,7 @@ module.exports = class extends generators {
 			}
 			json.push({
 				title: this.answers.mdTitle,
-				detail: "",
+				detail: this.answers.mdDetail,
 				time: this.answers.mdTime,
 				tag: this.answers.mdTag.length === 0 ? [] : this.answers.mdTag
 			})
