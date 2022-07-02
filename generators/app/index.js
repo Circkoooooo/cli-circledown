@@ -10,66 +10,48 @@ module.exports = class extends generators {
 	constructor(args, opts) {
 		super(args, opts)
 		this.answers = {}
-		console.log('\n', chalk.green("CircleDown - A Blog Cli With OneCircle Blog"), "\n")
+		console.log('\n', chalk.green("『CircleDown - A Blog Cli With OneCircle Blog』"), "\n")
 	}
 	save(obj) {
 		Object.assign(this.answers, obj)
 	}
 
 	async prompting() {
-		await this.prompt([
-			// 标题内容
+		return await this.prompt([
 			{
 				type: 'confirm',
 				name: 'isCircleBlog',
-				message: '是否为circleBlog新建内容吗？',
+				message: 'Is circleBlog content will you build？',
 				default: true,
 
-			}
-		]).then(answers => {
-			this.save(answers)
-		})
-
-
-		// 如果是circleBlog
-		if (this.answers.isCircleBlog) {
-			await this.prompt([
-				// blog.json
-				{
-					type: 'input',
-					name: 'circleBlogJson',
-					message: '请输入目录文件的名称(.json)',
-					default: 'blog.json',
-
-				}
-			]).then(answers => {
-				this.save(answers)
-			})
-		}
-		await this.prompt([
+			},
 			// 标题内容
 			{
 				type: 'input',
 				name: 'mdTitle',
-				message: '标题',
+				message: 'title',
 				default: 'title',
 
 			},
 			{
 				type: 'input',
 				name: 'mdAuthor',
-				message: '作者',
+				message: 'author',
 				default: "author"
+			},
+			{
+				type: "checkbox",
+				name: "mdTag",
+				message: "tag [you can add addtional tags after done building]",
+				choices: ["vue", "typescript", "react", "git", "nodejs", "前端工程化", "javascript"]
 			}
 		]).then(answers => {
 			this.save(answers)
+			// 填充当前时间mdTime到mdTitle
+			const time = new Date().toLocaleString()
+			this.answers.mdTime = time
+			return this.answers
 		})
-
-
-		// 填充当前时间mdTime到mdTitle
-		const time = new Date().toLocaleString()
-		this.answers.mdTime = time
-		return this.answers
 	}
 
 	async writing() {
@@ -85,7 +67,7 @@ module.exports = class extends generators {
 
 		// 判断是否需要读取blog.json文件
 		if (this.answers.isCircleBlog) {
-			const exist = this.fs.exists(this.destinationPath('blog.json'))
+			const exist = this.fs.exists(this.destinationPath("blog.json"))
 
 			if (!exist) {
 				await this.fs.copyAsync(this.templatePath("jsons"), destDir, this.answers)
@@ -109,7 +91,7 @@ module.exports = class extends generators {
 				title: this.answers.mdTitle,
 				detail: "",
 				time: this.answers.mdTime,
-				tag: []
+				tag: this.answers.mdTag.length === 0 ? [] : this.answers.mdTag
 			})
 			this.fs.writeJSON(this.destinationPath("blog.json"), json)
 		}
@@ -131,6 +113,8 @@ module.exports = class extends generators {
 				throw err
 			}
 		})
+	}
+	end() {
 		this.log.ok("成功创建【" + this.answers.mdTitle + '】')
 	}
 }
