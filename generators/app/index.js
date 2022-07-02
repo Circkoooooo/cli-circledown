@@ -10,6 +10,7 @@ module.exports = class extends generators {
 	constructor(args, opts) {
 		super(args, opts)
 		this.answers = {}
+		console.log('\n', chalk.green("CircleDown - A Blog Cli With OneCircle Blog"), "\n")
 	}
 	save(obj) {
 		Object.assign(this.answers, obj)
@@ -21,7 +22,7 @@ module.exports = class extends generators {
 			{
 				type: 'confirm',
 				name: 'isCircleBlog',
-				message: '你想为circle-blog新建文章吗？',
+				message: '是否为circleBlog新建内容吗？',
 				default: true,
 
 			}
@@ -120,10 +121,16 @@ module.exports = class extends generators {
 				}
 			})
 		}
+		const isBlogMd = fs.existsSync(this.destinationPath("mds", this.answers.mdTitle + '.md'))
+		if (isBlogMd) {
+			this.log.err('存在【' + this.answers.mdTitle + '.md】的文件')
+			return
+		}
 		fs.writeFile(this.destinationPath("mds/" + this.answers.mdTitle + '.md'), mdTemp, (err) => {
 			if (err) {
 				throw err
 			}
 		})
+		this.log.ok("成功创建【" + this.answers.mdTitle + '】')
 	}
 }
